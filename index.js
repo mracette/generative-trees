@@ -52,9 +52,8 @@ function init(){
 	camControls = new THREE.OrbitControls(camera);
 	camControls.autoRotate = true;
 
+	//make a tree
 	generate(7);
-	scene.add(treeGroup);
-	scene.add(leafGroup);
 
 }
 
@@ -70,6 +69,7 @@ function generate(maxDepth) {
 	treeGroup.add(root);
 	addLayer(root, depth, maxDepth);
 	scene.add(treeGroup);
+	scene.add(leafGroup);
 
 }
 
@@ -81,6 +81,7 @@ function addLayer(child, depth, maxDepth){
 	let heightScale = Math.pow(0.95,depth);
 
 	let nBranches = (maxDepth-depth) - Math.floor(1.5*depth*Math.random());
+	if(depth === maxDepth - 1) {nBranches = 0;}
 
 	if(nBranches > 0) {
 		for(let i = 0; i < nBranches; i++){
@@ -106,23 +107,35 @@ function addLayer(child, depth, maxDepth){
 
 			// rotate on z axis and adjust corresponding x offset
 			branch.rotation.z += rotation.z;
-			branch.translateX(-1*Math.sin(rotation.z)*(child.scale.y * heightScale)/2);
+			branch.translateX(-0.5 * child.scale.y * heightScale * Math.sin(rotation.z));
+			branch.translateY(0.5 * branch.scale.y * heightScale * (Math.cos(rotation.z) - 1));
 
 			// rotate on x axis and adjust corresponding z offsets
 			branch.rotation.x += rotation.x;
-			branch.translateZ(Math.sin(rotation.x)*(child.scale.y * heightScale)/2);
+			branch.translateZ(0.5 * child.scale.y * heightScale * Math.sin(rotation.x));
+			branch.translateY(0.5 * child.scale.y * heightScale * (Math.cos(rotation.x) - 1));
 
 			treeGroup.add(branch);
+
+			console.log(new THREE.Vector3(rotation.x, rotation.y, rotation.z).normalize());
 
 			addLayer(branch, depth+1, maxDepth);
 		}
 	} else {
-		if(0.7 > Math.random()){
+		if(1 > Math.random()){
 			let newLeaf = leaf.clone();
+
+			//copy position of the last branch
 			newLeaf.position.copy(child.position);
-			//newLeaf.translateX(Math.cos(90 - child.rotation.z)*(child.scale.y * heightScale)/2);
-			//newLeaf.translateY(child.scale.y * heightScale);
-			//newLeaf.translateY(child.scale.y * heightScale/2);
+
+			//move to the tip of the branch (based on x-rotation)
+			newLeaf.translateY(0.5 * child.scale.y * (Math.cos(child.rotation.x)));
+			newLeaf.translateZ(0.5 * child.scale.y  * Math.sin(child.rotation.x))
+
+			//move to the tip of the branch (based on z-rotation)
+			newLeaf.translateY(0.5 * child.scale.y * (Math.cos(child.rotation.z) - 1));
+			newLeaf.translateX(-0.5 * child.scale.y  * Math.sin(child.rotation.z));
+
 			leafGroup.add(newLeaf);
 			return;
 		} else {
