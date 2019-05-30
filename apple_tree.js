@@ -2,12 +2,13 @@
 class AppleTree {
 
     constructor(scene, depth) {
-        this.treeGroup = new THREE.Group();
+        this.branchGroup = new THREE.Group();
         this.leafGroup = new THREE.Group();
+        this.treeGroup = new THREE.Group();
 
         let rootGeo = new THREE.BoxGeometry(1,1,1);
-        let rootMat = new THREE.MeshBasicMaterial({color: 0x000000});
-        this.root = new THREE.Mesh(rootGeo, rootMat);
+        this.rootMat = new THREE.MeshBasicMaterial({color: 0x000000});
+        this.root = new THREE.Mesh(rootGeo, this.rootMat);
         this.root.scale.set(1,5,1);
 
         let leafGeo = new THREE.SphereGeometry(0.5,8,8);
@@ -19,12 +20,13 @@ class AppleTree {
 
     generate(scene, maxDepth) {
 
-        this.treeGroup.add(this.root);
+        this.branchGroup.add(this.root);
         let depth = 1;
         this.addLayer(this.root, depth, maxDepth);
 
+        this.treeGroup.add(this.leafGroup);
+        this.treeGroup.add(this.branchGroup);
         scene.add(this.treeGroup);
-        scene.add(this.leafGroup);
 
     }
 
@@ -70,7 +72,7 @@ class AppleTree {
                 branch.translateZ(0.5 * child.scale.y * heightScale * Math.sin(rotation.x));
                 branch.translateY(0.5 * child.scale.y * heightScale * (Math.cos(rotation.x) - 1));
 
-                this.treeGroup.add(branch);
+                this.branchGroup.add(branch);
 
                 this.addLayer(branch, depth+1, maxDepth);
             }
