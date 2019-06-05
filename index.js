@@ -3,15 +3,16 @@ const THREE = window.THREE = require('three');
 const OrbitControls = require('./controls/orbit_controls.js');
 const GLTFExporter = require('./gltf/GLTFExporter.js');
 const GLTFLoader = require('./gltf/GLTFLoader.js');
-const AppleTree = require('./apple_tree.js');
+const Tree = require('./tree.js');
 
 let camera, scene, renderer, camControls, exporter;
-let currentModel;
+let params = {
+	depth: 7
+};
 let subjects = {};
 let clock = new THREE.Clock();
 
 const canvas = document.getElementById("canvas");
-const dlButton = document.getElementById("dl");
 
 init();
 bindEventListeners();
@@ -22,15 +23,21 @@ function bindEventListeners() {
         'resize', 
         onWindowResize(window.innerWidth, window.innerHeight), 
         false
-    );
+	);
+	document.getElementById('dl').onclick = () => {
+		downloadObjectAsJson(subjects.tree, 'tree');
+	};
+	document.getElementById('generate').onclick = () => {
+		scene.remove(scene.children[0]);
+		subjects.tree = new Tree(scene, params.depth);
+	};
 } 
 
 function init(){
 
 	//scene
 	scene = new THREE.Scene();
-	//scene.background = new THREE.Color('#1F262F');
-	scene.background = new THREE.Color('#FFFFFF');
+	scene.background = new THREE.Color('#1F262F');
 
 	//renderer
 	renderer = new THREE.WebGLRenderer({canvas: canvas, antialias: true, alpha: true}); 
@@ -57,8 +64,7 @@ function init(){
 	exporter = new THREE.GLTFExporter();
 
 	//make a tree
-	subjects.appleTree = new AppleTree(scene, 7);
-	//exportModel(subjects.appleTree.treeGroup, 'apple-tree');
+	subjects.tree = new Tree(scene, params.depth);
 
 }
 
@@ -71,7 +77,7 @@ function render() {
 	let d = clock.getDelta();
 	let e = clock.getElapsedTime();
 	camControls.update(d);
-	subjects.appleTree.update(d, e);
+	subjects.tree.update(d, e);
     renderer.render(scene, camera);
 }
 
@@ -92,7 +98,7 @@ function downloadObjectAsJson(exportObj, exportName){
     var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportObj));
     var downloadAnchorNode = document.createElement('a');
     downloadAnchorNode.setAttribute("href",     dataStr);
-    downloadAnchorNode.setAttribute("download", exportName + ".json");
+    downloadAnchorNode.setAttribute("download", exportName + ".gltf");
     document.body.appendChild(downloadAnchorNode); // required for firefox
     downloadAnchorNode.click();
     downloadAnchorNode.remove();

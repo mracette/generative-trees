@@ -4,8 +4,30 @@
 		<meta charset="UTF-8">
         <title>THREE</title>
     </head>
+    <style>
+        #info {
+            position: absolute;
+            top: 0px;
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+            color: #ffffff;
+            text-align: center;
+            z-index: 1;
+        }
+        :any-link{
+            color: #ffffff;
+        }
 
+    </style>
     <body style="margin: 0">
+		<div id="info">
+            <p>
+                Recusive Tree in three.js / webgl <br>
+                Inspired by <a href="https://mrdoob.com/">mrdoob</a> <br>
+                <a href="#" id='dl'>Download gltf</a> | <a href="#" id='generate'>Generate new tree</a>
+            </p>
+        </div>        
         <canvas id="canvas" style="width: 100%; height: 100%"></canvas>
         <script src="./bundle.js"></script>
 	</body>
