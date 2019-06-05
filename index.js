@@ -1,8 +1,7 @@
 // inspired by the @mrdoob sketch: https://threejs.org/editor/#file=https://mrdoob.neocities.org/030/app.json
 const THREE = window.THREE = require('three');
-const OrbitControls = require('./controls/orbit_controls.js');
-const GLTFExporter = require('./gltf/GLTFExporter.js');
-const GLTFLoader = require('./gltf/GLTFLoader.js');
+const OrbitControls = require('three/examples/js/controls/OrbitControls.js');
+const GLTFExporter = require('three/examples/js/exporters/GLTFExporter.js');
 const Tree = require('./tree.js');
 
 let camera, scene, renderer, camControls, exporter;
