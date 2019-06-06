@@ -1,19 +1,21 @@
+require('three/examples/js/utils/BufferGeometryUtils');
 
 class Tree {
 
     constructor(scene, depth) {
-        this.branchGroup = new THREE.Group();
-        this.leafGroup = new THREE.Group();
+
         this.treeGroup = new THREE.Group();
 
-        let rootGeo = new THREE.BoxGeometry(1,1,1);
-        this.rootMat = new THREE.MeshBasicMaterial({color: 0x000000});
-        this.root = new THREE.Mesh(rootGeo, this.rootMat);
-        this.root.scale.set(1,5,1);
+        this.branchGeos = [];
+        this.leafGeos = [];
 
-        let leafGeo = new THREE.SphereGeometry(0.5,8,8);
+        this.branchGeo = new THREE.BoxBufferGeometry(1,1,1);
+        this.branchMat = new THREE.MeshBasicMaterial({color: 0x000000});
+        this.branch = new THREE.Mesh(this.branchGeo, this.branchMat);
+
+        this.leafGeo = new THREE.SphereBufferGeometry(0.5,8,8);
         this.leafMat = new THREE.MeshBasicMaterial({color: 0x0000ff});
-        this.leaf = new THREE.Mesh(leafGeo, this.leafMat);
+        this.leaf = new THREE.Mesh(this.leafGeo, this.leafMat);
 
         this.generate(scene, depth);
     }
@@ -24,17 +26,26 @@ class Tree {
         let depth = 1;
 
         // add 'root' branch
-        this.branchGroup.add(this.root);
+        let root = this.branch;
+        root.scale.set(1,5,1);
+        root.updateMatrixWorld();
+        this.branchGeos.push(root.geometry.clone().applyMatrix(root.matrixWorld));
 
         // begin recursive generation
-        this.addLayer(this.root, depth, maxDepth);
+        this.addLayer(root, depth, maxDepth);
 
-        // add branch and leaf groups to the tree group
-        this.treeGroup.add(this.leafGroup);
-        this.treeGroup.add(this.branchGroup);
+        // merge buffer geos
+        let branchGeo = THREE.BufferGeometryUtils.mergeBufferGeometries(this.branchGeos);
+        let leafGeo = THREE.BufferGeometryUtils.mergeBufferGeometries(this.leafGeos);
+  
+        // merge vertices
+        branchGeo = THREE.BufferGeometryUtils.mergeVertices(branchGeo, .001);
 
-        // add to scene
-        scene.add(this.treeGroup);
+        let leaves = new THREE.Mesh(leafGeo, this.leafMat);
+        let branches = new THREE.Mesh(branchGeo, this.branchMat);
+        let tree = new THREE.Group().add(leaves, branches);
+        console.log(tree);
+        scene.add(tree);
 
     }
 
@@ -80,7 +91,8 @@ class Tree {
                 branch.translateZ(0.5 * child.scale.y * heightScale * Math.sin(rotation.x));
                 branch.translateY(0.5 * child.scale.y * heightScale * (Math.cos(rotation.x) - 1));
 
-                this.branchGroup.add(branch);
+                branch.updateMatrixWorld();
+                this.branchGeos.push(branch.geometry.clone().applyMatrix(branch.matrixWorld));
 
                 this.addLayer(branch, depth+1, maxDepth);
             }
@@ -100,8 +112,11 @@ class Tree {
                 newLeaf.translateY(0.5 * child.scale.y * (Math.cos(child.rotation.z) - 1));
                 newLeaf.translateX(-0.5 * child.scale.y  * Math.sin(child.rotation.z));
 
-                this.leafGroup.add(newLeaf);
+                newLeaf.updateMatrixWorld();
+                this.leafGeos.push(newLeaf.geometry.clone().applyMatrix(newLeaf.matrixWorld));
+
                 return;
+
             } else {
                 return;
             }
