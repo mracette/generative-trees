@@ -2,9 +2,10 @@
 const THREE = window.THREE = require('three');
 const OrbitControls = require('three/examples/js/controls/OrbitControls.js');
 const GLTFExporter = require('three/examples/js/exporters/GLTFExporter.js');
-const Tree = require('./tree.js');
+const ColorTree = require('./src/colorTree.js');
 
 let camera, scene, renderer, camControls, exporter;
+let uniforms = {};
 let params = {
 	depth: 7
 };
@@ -24,15 +25,16 @@ function bindEventListeners() {
         false
 	);
 	document.getElementById('dl').onclick = () => {
-		downloadObjectAsJson(subjects.tree, 'tree');
+		exportModel(subjects.tree.treeGroup, 'tree');
 	};
 	document.getElementById('generate').onclick = () => {
 		scene.remove(scene.children[0]);
-		subjects.tree = new Tree(scene, params.depth);
+		subjects.tree = new ColorTree(scene, params.depth);
 	};
 } 
 
 function init(){
+	
 
 	//scene
 	scene = new THREE.Scene();
@@ -45,6 +47,7 @@ function init(){
 	renderer.setSize(canvas.width, canvas.height);
 	renderer.gammaInput = true;
 	renderer.gammaOutput = true;
+	ctx = WebGLDebugUtils.makeDebugContext(canvas.getContext("webgl"));
 
 	//camera
 	const aspectRatio = canvas.width / canvas.height;
@@ -53,17 +56,18 @@ function init(){
 	const farPlane = 10000; 
 	camera = new THREE.PerspectiveCamera(fieldOfView, aspectRatio, nearPlane, farPlane);
 	camera.position.set(0,0,50);
-	camera.lookAt(new THREE.Vector3(0,5,0));
+	camera.lookAt(new THREE.Vector3(0,10,0));
 
 	//controls
 	camControls = new THREE.OrbitControls(camera);
 	camControls.autoRotate = true;
+	camControls.target = new THREE.Vector3(0, 10, 0);
 
 	//exporter
 	exporter = new THREE.GLTFExporter();
 
 	//make a tree
-	subjects.tree = new Tree(scene, params.depth);
+	subjects.tree = new ColorTree(scene, params.depth);
 
 }
 
@@ -87,8 +91,10 @@ function onWindowResize(newWidth, newHeight){
 }
 
 function exportModel(subject, fileName){
+	console.log(subject);
 	exporter.parse(subject, (obj) => {
 		downloadObjectAsJson(obj, fileName);
+		console.log(obj);
 		console.log('Exported the following object: ' + obj);
 	});
 }
