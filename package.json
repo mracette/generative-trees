@@ -1,0 +1,35 @@
+{
+  "name": "generative_tree",
+  "version": "1.0.0",
+  "description": "Generative Trees in THREE.js",
+  "main": "index.js",
+  "dependencies": {
+    "d3-scale-chromatic": "^1.3.3",
+    "three": "^0.104.0",
+    "three.meshline": "^1.2.0"
+  },
+  "devDependencies": {
+    "browserify": "^16.2.3",
+    "budo": "^11.6.2",
+    "uglify-js": "^3.6.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "budo index.js:bundle.js --live",
+    "build": "browserify index.js | uglifyjs -cm > bundle.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mracette/generative-trees.git"
+  },
+  "keywords": [
+    "three.js",
+    "generative"
+  ],
+  "author": "Mark Racette",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mracette/generative-trees/issues"
+  },
+  "homepage": "https://github.com/mracette/generative-trees#readme"
+}
