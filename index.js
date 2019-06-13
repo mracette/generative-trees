@@ -1,110 +1,101 @@
-// inspired by the @mrdoob sketch: https://threejs.org/editor/#file=https://mrdoob.neocities.org/030/app.json
+// three.js dependencies
 const THREE = window.THREE = require('three');
-const OrbitControls = require('three/examples/js/controls/OrbitControls.js');
-const GLTFExporter = require('three/examples/js/exporters/GLTFExporter.js');
-const ColorTree = require('./src/colorTree.js');
+require('three/examples/js/controls/OrbitControls.js');
+require('three/examples/js/exporters/GLTFExporter.js');
+require('three/examples/js/utils/BufferGeometryUtils');	
 
-let camera, scene, renderer, camControls, exporter;
-let uniforms = {};
-let params = {
-	depth: 7
-};
-let subjects = {};
-let clock = new THREE.Clock();
+// trees
+window.FruitTree = require('./src/fruit-tree.js');
+window.SimpleTree = require('./src/simple-tree.js');
+window.PineTree = require('./src/pine-tree.js');
+window.WillowTree = require('./src/willow-tree.js');
 
+// other
+window.d3Chromatic = require('d3-scale-chromatic');
+window.MeshLine = require('three.meshline');
+
+// scene manager handles all things THREE.js
+const SceneManager = require('./src/scene-manager');
+
+// init the scene manager
 const canvas = document.getElementById("canvas");
+const manager = new SceneManager(canvas);
 
-init();
+manager.init().then(() => {
+	animate();
+});
+
+console.log(manager);
+
+// handle all listeners
 bindEventListeners();
-animate();
 
 function bindEventListeners() {
     window.addEventListener(
         'resize', 
-        onWindowResize(window.innerWidth, window.innerHeight), 
+        manager.onWindowResize(canvas.clientWidth, canvas.clientHeight), 
         false
 	);
-	document.getElementById('dl').onclick = () => {
-		exportModel(subjects.tree.treeGroup, 'tree');
+
+	// simple tree
+	document.getElementById('dl_simple').onclick = () => {
+		model = manager.scenes[0].userData.tree.treeGroup;
+		exportModel(model, 'simple-tree');
 	};
-	document.getElementById('generate').onclick = () => {
-		scene.remove(scene.children[0]);
-		subjects.tree = new ColorTree(scene, params.depth);
+	document.getElementById('refresh_simple').onclick = () => {
+		manager.regenerate('simple');
+	};
+
+	// fruit tree
+	document.getElementById('dl_fruit').onclick = () => {
+		model = manager.scenes[1].userData.tree.treeGroup;
+		exportModel(model, 'fruit-tree');
+	};
+	document.getElementById('refresh_fruit').onclick = () => {
+		manager.regenerate('fruit');
+	};
+
+	// pine tree
+	document.getElementById('dl_pine').onclick = () => {
+		model = manager.scenes[2].userData.tree.treeGroup;
+		exportModel(model, 'pine-tree');
+	};
+	document.getElementById('refresh_pine').onclick = () => {
+		manager.regenerate('pine');
+	};
+
+	// willow
+	document.getElementById('dl_willow').onclick = () => {
+		model = manager.scenes[3].userData.tree.treeGroup;
+		exportModel(model, 'willow-tree');
+	};
+	document.getElementById('refresh_willow').onclick = () => {
+		manager.regenerate('willow');
 	};
 } 
 
-function init(){
-	
-
-	//scene
-	scene = new THREE.Scene();
-	scene.background = new THREE.Color('#1F262F');
-
-	//renderer
-	renderer = new THREE.WebGLRenderer({canvas: canvas, antialias: true, alpha: true}); 
-	const DPR = (window.devicePixelRatio) ? window.devicePixelRatio : 1;
-	renderer.setPixelRatio(DPR);
-	renderer.setSize(canvas.width, canvas.height);
-	renderer.gammaInput = true;
-	renderer.gammaOutput = true;
-	ctx = WebGLDebugUtils.makeDebugContext(canvas.getContext("webgl"));
-
-	//camera
-	const aspectRatio = canvas.width / canvas.height;
-	const fieldOfView = 60;
-	const nearPlane = 1;
-	const farPlane = 10000; 
-	camera = new THREE.PerspectiveCamera(fieldOfView, aspectRatio, nearPlane, farPlane);
-	camera.position.set(0,0,50);
-	camera.lookAt(new THREE.Vector3(0,10,0));
-
-	//controls
-	camControls = new THREE.OrbitControls(camera);
-	camControls.autoRotate = true;
-	camControls.target = new THREE.Vector3(0, 10, 0);
-
-	//exporter
-	exporter = new THREE.GLTFExporter();
-
-	//make a tree
-	subjects.tree = new ColorTree(scene, params.depth);
-
-}
-
 function animate() {
+	render();
     requestAnimationFrame(animate);
-    render();
 }
 
 function render() {
-	let d = clock.getDelta();
-	let e = clock.getElapsedTime();
-	camControls.update(d);
-	subjects.tree.update(d, e);
-    renderer.render(scene, camera);
-}
-
-function onWindowResize(newWidth, newHeight){
-    camera.aspect = newWidth / newHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(newWidth, newHeight);
+	manager.update();
 }
 
 function exportModel(subject, fileName){
-	console.log(subject);
+	let exporter = new THREE.GLTFExporter();
 	exporter.parse(subject, (obj) => {
-		downloadObjectAsJson(obj, fileName);
-		console.log(obj);
-		console.log('Exported the following object: ' + obj);
+		downloadGLTF(obj, fileName);
 	});
 }
 
-function downloadObjectAsJson(exportObj, exportName){
-    var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportObj));
-    var downloadAnchorNode = document.createElement('a');
-    downloadAnchorNode.setAttribute("href",     dataStr);
-    downloadAnchorNode.setAttribute("download", exportName + ".gltf");
-    document.body.appendChild(downloadAnchorNode); // required for firefox
-    downloadAnchorNode.click();
-    downloadAnchorNode.remove();
-  }
+function downloadGLTF(exportObj, exportName){
+	var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportObj));
+	var downloadAnchorNode = document.createElement('a');
+	downloadAnchorNode.setAttribute("href",     dataStr);
+	downloadAnchorNode.setAttribute("download", exportName + ".gltf");
+	document.body.appendChild(downloadAnchorNode); // required for firefox
+	downloadAnchorNode.click();
+	downloadAnchorNode.remove();
+}

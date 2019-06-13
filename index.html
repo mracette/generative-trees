@@ -1,34 +1,47 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<meta charset="UTF-8">
+        <meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
         <title>THREE</title>
     </head>
     <style>
-        #info {
+        #canvas {
             position: absolute;
-            top: 0px;
+            left: 0;
             width: 100%;
-            padding: 10px;
-            box-sizing: border-box;
-            color: #ffffff;
-            text-align: center;
+            height: 100%;
+        }
+        #content {
+            position: absolute;
+            top: 0; width: 100%;
             z-index: 1;
+            padding: 3em 0 0 0;
         }
-        :any-link{
-            color: #ffffff;
+        .list-item {
+            display: inline-block;
+            margin: 1em;
+            padding: 1em;
+            box-shadow: 1px 2px 4px 0px rgba(0,0,0,0.25);
         }
-
+        .list-item .scene {
+            width: 400px;
+            height: 400px;
+        }
+        .list-item .description {
+            color: #888;
+            font-family: sans-serif;
+            font-size: medium;
+            width: 100%;
+            margin-top: 0.5em;
+        }
+        a:any-link {
+            color: #888;
+        }
     </style>
     <body style="margin: 0">
-		<div id="info">
-            <p>
-                Recusive Tree in three.js / webgl <br>
-                Inspired by <a href="https://mrdoob.com/">mrdoob</a> <br>
-                <a href="#" id='dl'>Download gltf</a> | <a href="#" id='generate'>Generate new tree</a>
-            </p>
-        </div>        
-        <canvas id="canvas" style="width: 100%; height: 100%"></canvas>
+        <canvas id="canvas"></canvas>
+        <div id="content"></div>
         <script src="./bundle.js"></script>
 	</body>
 	
