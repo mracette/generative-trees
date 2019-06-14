@@ -6,9 +6,9 @@
 Each tree strikes a balance of structure and randomness, owing its existence entirely to code.
 
 The models in this project are:
-* Standalone models for customization and easy use in projects
-* Easily downloaded as .gltf files from the live view above
-* Merges into efficient buffergeometries where possible to achieve high performance
+* Standalone modules and easy customize and use in projects
+* Downloadable as .gltf files from the live view above
+* Merged into efficient buffergeometries where possible to achieve high performance
 
 ## Trees
 
