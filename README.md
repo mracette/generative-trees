@@ -12,11 +12,11 @@ The models in this project are:
 
 ## Trees
 
-**Simple Tree**
+### Simple Tree
 
 ![Simple Tree](./img/simple-tree.png "Simple Tree")
 
-**Fruit Tree**
+### Fruit Tree
 
 ![Fruit Tree](./img/fruit-tree.png "Fruit Tree")
 
@@ -24,11 +24,11 @@ The models in this project are:
 * *Inspired by [mrdoob](https://github.com/mrdoob)*
 * *Uses a shader material, which will be exported as a basic material if used .gltf export*
 
-**Pine Tree**
+### Pine Tree
 
 ![Pine Tree](./img/pine-tree.png "Pine Tree")
 
-**Willow Tree**
+### Willow Tree
 
 ![Willow Tree](./img/willow-tree.png "Willow Tree")
 
