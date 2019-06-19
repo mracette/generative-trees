@@ -51,7 +51,7 @@ class SceneManager {
                 case 0: 
                     name = 'Simple Tree';
                     id = 'simple';
-                    github = "https://github.com/mracette/generative-trees/blob/master/src/simple-tree.js";
+                    github = 'https://github.com/mracette/generative-trees/blob/master/src/simple-tree.js';
                     tree = new SimpleTree(scene, 3);
                     bbIndex = 0;
                     bbOffset = 5;
@@ -59,7 +59,7 @@ class SceneManager {
                 case 1: 
                     name = 'Fruit Tree';
                     id = 'fruit';
-                    github = "https://github.com/mracette/generative-trees/blob/master/src/fruit-tree.js";
+                    github = 'https://github.com/mracette/generative-trees/blob/master/src/fruit-tree.js';
                     tree = new FruitTree(scene, 7);
                     bbIndex = 0;
                     bbOffset = 5;
@@ -67,7 +67,7 @@ class SceneManager {
                 case 2: 
                     name = 'Pine Tree';
                     id = 'pine';
-                    github = "https://github.com/mracette/generative-trees/blob/master/src/pine-tree.js";
+                    github = 'https://github.com/mracette/generative-trees/blob/master/src/pine-tree.js';
                     tree = new PineTree(scene, 15);
                     bbIndex = 0;
                     bbOffset = 0;
@@ -75,7 +75,7 @@ class SceneManager {
                 case 3: 
                     name = 'Willow Tree';
                     id = 'willow';
-                    github = "https://github.com/mracette/generative-trees/blob/master/src/willow-tree.js";
+                    github = 'https://github.com/mracette/generative-trees/blob/master/src/willow-tree.js';
                     tree = new WillowTree(scene, 6);
                     bbIndex = 0;
                     bbOffset = 3;
