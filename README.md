@@ -1,7 +1,7 @@
 # Generative Trees
+**View Live**: (https://mracette.github.io/generative-trees)
 
 ## Overview
-**View Live**: (https://mracette.github.io/generative-trees)
 
 Each tree strikes a balance of structure and randomness, owing its existence entirely to code.
 
